@@ -46,7 +46,10 @@ def get_base_path():
         # If the application is run as a bundle, the PyInstaller bootloader
         # extends the sys module by a flag frozen=True and sets the app
         # path into variable _MEIPASS'.
-        base_path = sys._MEIPASS
+        if hasattr(sys, '_MEIPASS'):
+            base_path = sys._MEIPASS
+        else:
+            base_path = os.path.dirname(os.path.abspath(__file__))
     else:
         base_path = os.path.dirname(os.path.abspath(__file__))
     return base_path
@@ -223,8 +226,8 @@ def replace_word(word, replacement):
     """
     logging.info(f"Replacing '{word}' with '{replacement}'")
     # Simulate pressing backspace to delete the typed word
-    for _ in range(len(word)+1):
-        keyboard.press_and_release('backspace')
+    # Simulate pressing backspace to delete the typed word in one go
+    keyboard.write("\b" * (len(word) + 1))
 
     # Split the replacement text by newlines and simulate typing each part
     replacement_parts = replacement.split('\n')
@@ -254,30 +257,34 @@ def on_key_event(replacement_data):
     Callback function to handle key events and detect words between spaces.
     """
     # Buffer to store typed characters
-    buffer = ""
+    buffer = []
+    # Create a set from replacement_data keys for faster lookups
+    replacement_words = set(replacement_data.keys())
 
     def handle_key(event):
         nonlocal buffer
-        global mouse_moved_significantly, is_paused  # Include is_paused here
+        global mouse_moved_significantly, is_paused
 
-        if is_paused:  # If paused, ignore all keyboard events
+        if is_paused:
             return
 
         if event.event_type == keyboard.KEY_DOWN:
-            # Reset buffer if mouse moved significantly
             if mouse_moved_significantly:
-                buffer = ""
-                mouse_moved_significantly = False  # Reset the flag
+                buffer = []
+                mouse_moved_significantly = False
 
-            if event.name == 'space':  # When a space is detected
-                if buffer in replacement_data:  # Check if the word is in the replacement data
-                    replace_word(buffer, replacement_data[buffer])
-                buffer = ""  # Reset the buffer
-            elif event.name == 'backspace':  # Handle backspace to remove the last character
-                buffer = buffer[:-1]  # Remove the last character from the buffer
-            elif event.name.isalnum() and event.name not in ['ctrl', 'enter']:  # Only process alphanumeric characters and ignore special keys
-                buffer += event.name  # Add the character to the buffer
-
+            if event.name == 'space':
+                word = "".join(buffer)
+                # Use the set for fast lookup
+                if word in replacement_words:
+                    replace_word(word, replacement_data[word])
+                buffer = []
+            elif event.name == 'backspace':
+                if buffer:
+                    buffer.pop()
+            # Only allow alphanumeric and specific special characters
+            elif event.name.isalnum() and event.name not in ['ctrl', 'enter']:
+                buffer.append(event.name)
     return handle_key
 
 def save_settings():

@@ -4,6 +4,10 @@ import logging, time
 from pynput import mouse
 from src.starterConfig import *
 
+
+def press_ctrl_enter():
+    keyboard.press_and_release('enter')
+
 def replace_word(word, replacement):
     """
     Replace the typed word with the replacement text.
@@ -19,7 +23,7 @@ def replace_word(word, replacement):
     for part in replacement_parts:
         keyboard.write(part)
         if part != replacement_parts[-1]:  # If not the last part, press Enter
-            keyboard.press_and_release('enter')
+            press_ctrl_enter()
     keyboard.write(AFTER_REPLACEMENT)
     
 def on_mouse_move(x, y):

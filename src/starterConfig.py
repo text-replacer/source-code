@@ -13,6 +13,8 @@ DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKz1tiROR-
 DEFAULT_BEFORE_REPLACEMENT = ""
 DEFAULT_AFTER_REPLACEMENT = " "
 LINK_EDIT_FILE = "https://docs.google.com/spreadsheets/d/16uVFfVMKR7jVXA70g4BCo8KAE7iZVYnJT48oTpD1Z-4/edit?gid=0#gid=0"
+TIME_INTERVAL_CLIPBOARD_CHECK = 0.8
+TIME_INTERVAL_KEYBOARD_CHECK = 0.4
 
 # Global variables
 last_mouse_position = (0, 0)

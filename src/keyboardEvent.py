@@ -1,29 +1,32 @@
-from re import I
+# src/keyboardEvent.py
 import keyboard
 import logging, time
 from pynput import mouse
 from src.starterConfig import *
-
-
-def press_ctrl_enter():
-    keyboard.press_and_release('enter')
+import pyperclip
+import win32clipboard
 
 def replace_word(word, replacement):
     """
-    Replace the typed word with the replacement text.
+    Replace the typed word or selected text with the replacement text.
     """
     logging.info(f"Replacing '{word}' with '{replacement}'")
     # Simulate pressing backspace to delete the typed word
-    # Simulate pressing backspace to delete the typed word in one go
     keyboard.write("\b" * (len(word) + 1))
-
+    
     # Split the replacement text by newlines and simulate typing each part
     replacement_parts = replacement.split('\n')
     keyboard.write(BEFORE_REPLACEMENT)
-    for part in replacement_parts:
-        keyboard.write(part)
-        if part != replacement_parts[-1]:  # If not the last part, press Enter
-            press_ctrl_enter()
+    # for part in replacement_parts:
+    #     keyboard.write(part)
+    #     if part != replacement_parts[-1]:  # If not the last part, press Enter
+    #         keyboard.press_and_release('enter')
+    win32clipboard.OpenClipboard()
+    win32clipboard.EmptyClipboard()
+    win32clipboard.SetClipboardText(replacement, win32clipboard.CF_UNICODETEXT)
+    win32clipboard.CloseClipboard()
+    keyboard.press_and_release('ctrl+v')
+
     keyboard.write(AFTER_REPLACEMENT)
     
 def on_mouse_move(x, y):
@@ -57,21 +60,41 @@ def on_key_event(replacement_data):
             return
 
         if event.event_type == keyboard.KEY_DOWN:
-            if mouse_moved_significantly:
-                buffer = []
-                mouse_moved_significantly = False
+            # if mouse_moved_significantly:
+            #     buffer = []
+            #     mouse_moved_significantly = False
 
-            if event.name == 'space':
-                word = "".join(buffer)
-                # Use the set for fast lookup
-                if word in replacement_words:
-                    replace_word(word, replacement_data[word])
-                buffer = []
+            if event.name in ['space', 'enter']:
+                # Try to get currently selected text
+                # Get current selection by simulating Ctrl+C
+                current_selection = pyperclip.paste().strip()
+                if current_selection:
+                    # Selection is detected
+                    if current_selection in replacement_words:
+                        replace_word(current_selection, replacement_data[current_selection])
+                        buffer = [] # Empty the buffer
+                        pyperclip.copy('')  # Clear clipboard after replacement
+                    else:
+                        # Selection does not match a key in the dictionary
+                        word = "".join(buffer)
+                         # Use the set for fast lookup
+                        if word in replacement_words:
+                            replace_word(word, replacement_data[word])
+                        buffer = []
+                else:
+                    if mouse_moved_significantly:
+                        buffer = []
+                        mouse_moved_significantly = False
+                    word = "".join(buffer)
+                    # Use the set for fast lookup
+                    if word in replacement_words:
+                        replace_word(word, replacement_data[word])
+                    buffer = []
             elif event.name == 'backspace':
                 if buffer:
                     buffer.pop()
             # Only allow alphanumeric and specific special characters
-            elif event.name.isalnum() and event.name not in ['ctrl', 'enter']:
+            elif event.name.isalnum() and event.name not in ['ctrl', 'enter', 'capslock', 'shift']:
                 buffer.append(event.name)
     return handle_key
 
@@ -97,7 +120,7 @@ def start_keyboard_hook(replacement_data):
     keyboard.hook(on_key_event(replacement_data))
     
     while not stop_event.is_set():  # Loop until the stop event is set
-        time.sleep(0.1)  # Sleep for 100 milliseconds to reduce CPU usage
+        time.sleep(TIME_INTERVAL_KEYBOARD_CHECK)  # Sleep for 100 milliseconds to reduce CPU usage
     
     # Clean up when the thread is stopped
     keyboard.unhook_all()

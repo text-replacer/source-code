@@ -21,6 +21,12 @@ def start_program():
         clipboard_thread = Thread(target=monitor_clipboard, args=(replacement_data,), daemon=True)
         clipboard_thread.start()
         logging.info("Clipboard monitoring started.")
+        try:
+            download_and_process_xlsx_for_languages(LINK_LANGUAGE_FILE, LANGUAGES_FOLDER)
+            load_language(saved_language)
+            update_gui_language()
+        except Exception as e:
+            logging.error(f"Error downloading or processing language XLSX file: {e}")
     else:
         logging.error("Failed to start program. Exiting program.")
 

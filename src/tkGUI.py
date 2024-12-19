@@ -4,6 +4,7 @@ import logging
 import tkinter as tk
 from tkinter import messagebox
 import os
+import sys
 import webbrowser
 
 from src.processXlsx import *
@@ -76,20 +77,26 @@ def toggle_pause():
         pause_button.config(text=language_config['Buttons']['pause'], bg="green", activebackground="darkgreen")
         logging.info("Program resumed.")
 
-def reload_xlsx_from_internet(current_value):
+def exit_to_reload_data():
     """
-    Reload the XLSX file from the internet and update the replacement data.
-    """
-    global SHEET_URL, current_replacement_data
-    replacement_data = load_replacement_data(current_value)
-    if replacement_data:
-        current_replacement_data = replacement_data  # Update the current replacement data
-        logging.info("XLSX file reloaded from the internet.")
-        messagebox.showinfo("Reload", "XLSX file reloaded successfully!")
-    else:
-        logging.error("Failed to reload XLSX file from the internet.")
-        messagebox.showerror("Reload", "Failed to reload XLSX file from the internet.")
-
+    # Reload the XLSX file from the internet and update the replacement data.
+    # """
+    # global SHEET_URL, current_replacement_data
+    # replacement_data = load_replacement_data(current_value)
+    # if replacement_data:
+    #     current_replacement_data = replacement_data  # Update the current replacement data
+    #     logging.info("XLSX file reloaded from the internet.")
+    #     messagebox.showinfo("Reload", "XLSX file reloaded successfully!")
+    # else:
+    #     logging.error("Failed to reload XLSX file from the internet.")
+    #     messagebox.showerror("Reload", "Failed to reload XLSX file from the internet.")
+        
+    # After showing the reload message, exit and restart the program
+    # Close the application
+    root.quit()
+    root.destroy()
+    sys.exit()
+  
 def update_gui_language():
     """
     Update the GUI labels, buttons, and messages based on the selected language.
@@ -109,9 +116,10 @@ def change_language(language_code):
     Change the language of the program and save the selected language to the settings file.
     """
     global language_config
+        
     load_language(language_code)
     update_gui_language()
-
+        
     # Save the selected language to the settings file
     config['Settings'] = {
         'language': language_code,
@@ -176,7 +184,7 @@ save_button.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
 pause_button = tk.Button(root, text="Pause", font=custom_font, bg="green", fg="#fff", relief="flat", activebackground="#005a9e", activeforeground="#fff", command=toggle_pause)
 pause_button.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
 
-reload_button = tk.Button(root, text="Reload XLSX from Internet", font=custom_font, bg="#0078d7", fg="#fff", relief="flat", activebackground="#005a9e", activeforeground="#fff", command=lambda: reload_xlsx_from_internet(sheet_url_text.get("1.0", "end-1c").strip()))
+reload_button = tk.Button(root, text="Exit to Reload data", font=custom_font, bg="#0078d7", fg="#fff", relief="flat", activebackground="#005a9e", activeforeground="#fff", command=lambda: exit_to_reload_data())
 reload_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
 # Language dropdown
@@ -185,7 +193,7 @@ saved_language = config.get('Settings', 'language', fallback='vi')
 # Check if the languages folder exists, if not, create it and download the XLSX file
 if not os.path.exists(LANGUAGES_FOLDER):
     os.makedirs(LANGUAGES_FOLDER)
-    download_and_process_xlsx_for_languages("https://docs.google.com/spreadsheets/d/e/2PACX-1vSVoAsKwGTxQyR16vv8rLTwEx07N4OxZpK7qDql-tnb3sc3sOe6YCsJ549C3xFMNfMLO6Knn2I5By_Q/pub?output=xlsx", LANGUAGES_FOLDER)
+    download_and_process_xlsx_for_languages(LINK_EDIT_FILE, LANGUAGES_FOLDER)
 
 load_language(saved_language)
 language_files = [f for f in os.listdir(LANGUAGES_FOLDER) if f.endswith('.ini')]

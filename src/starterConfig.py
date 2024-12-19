@@ -13,6 +13,7 @@ DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQKz1tiROR-
 DEFAULT_BEFORE_REPLACEMENT = ""
 DEFAULT_AFTER_REPLACEMENT = " "
 LINK_EDIT_FILE = "https://docs.google.com/spreadsheets/d/16uVFfVMKR7jVXA70g4BCo8KAE7iZVYnJT48oTpD1Z-4/edit?gid=0#gid=0"
+LINK_LANGUAGE_FILE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVoAsKwGTxQyR16vv8rLTwEx07N4OxZpK7qDql-tnb3sc3sOe6YCsJ549C3xFMNfMLO6Knn2I5By_Q/pub?output=xlsx"
 TIME_INTERVAL_CLIPBOARD_CHECK = 0.8
 TIME_INTERVAL_KEYBOARD_CHECK = 0.5
 
@@ -50,7 +51,7 @@ BASE_PATH = get_base_path()
 LANGUAGES_FOLDER = os.path.join(BASE_PATH, "languages")
 
 # Get settings or use defaults
-SHEET_URL = config.get('Settings', 'sheet_url', fallback="https://docs.google.com/spreadsheets/d/e/2PACX-1vQKz1tiROR-S8zLK6YkrR5OPsvsuJAEVi1uC1ecTKk5-MLC-g6_jzIvSwAUNdnN5kyuIzbvU2DkmH1g/pub?output=xlsx") #DEFAULT_SHEET_URL
+SHEET_URL = config.get('Settings', 'sheet_url', fallback=DEFAULT_SHEET_URL) #DEFAULT_SHEET_URL
 BEFORE_REPLACEMENT = config.get('Settings', 'before_replacement', fallback=DEFAULT_BEFORE_REPLACEMENT)
 AFTER_REPLACEMENT = config.get('Settings', 'after_replacement', fallback=DEFAULT_AFTER_REPLACEMENT)
 

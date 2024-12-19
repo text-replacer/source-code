@@ -10,6 +10,7 @@ from src.tkGUI import *
 import win32clipboard
 import time
 from threading import Thread
+from src.updater import *  # Import the updater module
 
 def start_program():
     """
@@ -57,8 +58,10 @@ def monitor_clipboard(replacement_data):
         
         time.sleep(TIME_INTERVAL_CLIPBOARD_CHECK)  # Check clipboard once per second to reduce CPU usage
 
-start_program()
-
-atexit.register(stop_keyboard_hook)
-# Run the GUI
-root.mainloop()
+if __name__ == "__main__":
+    # Check for updates before starting the program
+    Thread(target=check_for_new_update, daemon=True).start()
+    start_program()
+    atexit.register(stop_keyboard_hook)
+    # Run the GUI
+    root.mainloop()

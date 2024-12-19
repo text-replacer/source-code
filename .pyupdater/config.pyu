@@ -1,0 +1,20 @@
+{
+  "config_dir": "D:\\_VSCODE_Git\\text-auto-replacer-by-drquochoai\\.pyupdater",
+  "filename": "D:\\_VSCODE_Git\\text-auto-replacer-by-drquochoai\\.pyupdater\\config.pyu",
+  "count": 0,
+  "app_config": {
+    "APP_NAME": "Text-Replacer-by-drquochoai",
+    "CLIENT_CONFIG_PATH": [
+      "client_config.py"
+    ],
+    "COMPANY_NAME": "drquochoai",
+    "PLUGIN_CONFIGS": {},
+    "UPDATE_PATCHES": false,
+    "MAX_DOWNLOAD_RETRIES": 3,
+    "HTTP_TIMEOUT": 30,
+    "UPDATE_URLS": [
+      "http://localhost:8000/"
+    ],
+    "DATA_DIR": "D:\\_VSCODE_Git\\text-auto-replacer-by-drquochoai"
+  }
+}

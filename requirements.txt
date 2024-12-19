@@ -2,3 +2,4 @@ keyboard
 requests
 pynput
 pyperclip
+pyupdater

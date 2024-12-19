@@ -229,12 +229,15 @@ status_bar.grid(row=6, column=0, columnspan=3, sticky="ew", padx=10, pady=10)
 
 # Redirect logging to the status bar
 class StatusBarHandler(logging.Handler):
-    def emit(self, record):
-        log_entry = self.format(record)
-        status_bar.config(text=log_entry)
+        def __init__(self, status_bar):
+           logging.Handler.__init__(self)
+           self.status_bar = status_bar
+        def emit(self, record):
+            log_entry = self.format(record)
+            self.status_bar.after(0, self.status_bar.config, {"text": log_entry}) # Schedule an update to GUI
                 
-# Add the status bar handler to the logger
-status_bar_handler = StatusBarHandler()
+# Redirect logging to the status bar
+status_bar_handler = StatusBarHandler(status_bar)
 status_bar_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 logging.getLogger().addHandler(status_bar_handler)
 

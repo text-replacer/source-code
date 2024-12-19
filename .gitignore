@@ -5,3 +5,5 @@
 /Text-Replacer-by-drquochoai.spec
 __pycache__/
 *.pyc
+/pyupdater
+/pyu-data

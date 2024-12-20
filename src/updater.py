@@ -1,4 +1,5 @@
 #!filepath: src/updater.py
+# changed src/updater.py: Removed version file dependency, get version from client_config, open update URL instead of specific file.
 import os
 import platform
 import requests
@@ -7,33 +8,16 @@ from packaging import version
 from src.starterConfig import get_base_path
 from src.client_config import ClientConfig
 
-VERSION_FILE = "version.txt"
-PLATFORM = (
-    "win"
-    if platform.system() == "Windows"
-    else "linux"
-    if platform.system() == "Linux"
-    else "mac"
-)
-
 # Define the path to the app
 BASE_PATH = get_base_path()
 
 def get_current_version() -> str:
-    """Retrieves the current version of the application from the version file.
+    """Retrieves the current version of the application from ClientConfig.
 
     Returns:
-        str: The current version, or "0.0.1" if the version file does not exist or an error occurs.
+        str: The current version.
     """
-    version_file_path = os.path.join(BASE_PATH, VERSION_FILE)
-    try:
-        if os.path.exists(version_file_path):
-            with open(version_file_path, "r") as f:
-                return f.read().strip()
-        else:
-            return "0.0.1"
-    except Exception:
-        return "0.0.1"
+    return ClientConfig.VERSION
 
 def check_for_new_update(update_label: tk.Label, download_button: tk.Button) -> None:
     """Checks for updates and updates the GUI elements accordingly.
@@ -55,14 +39,14 @@ def check_for_new_update(update_label: tk.Label, download_button: tk.Button) -> 
             if version.parse(latest_version) > version.parse(current_version):
                 update_label.config(text=f"New version available: {latest_version}")
                 download_button.config(
-                    command=lambda: open_download_page(update_url, latest_version),
+                    command=lambda: open_download_page(update_url),
                     state=tk.NORMAL,
                 )
-                # download_button.pack()
                 download_button.config(state=tk.NORMAL)
                 return
             else:
-                update_label.config(text="No updates available.")
+                update_label.config(text="You are on lastest version.")
+                download_button.grid_forget()
                 return
 
         except requests.exceptions.RequestException:
@@ -70,14 +54,11 @@ def check_for_new_update(update_label: tk.Label, download_button: tk.Button) -> 
         except Exception:
             pass
 
-def open_download_page(update_url: str, latest_version: str) -> None:
+def open_download_page(update_url: str) -> None:
     """Opens the download page in the default web browser.
 
     Args:
         update_url (str): The base URL for updates.
-        latest_version (str): The latest version available for download.
     """
-    download_url = f"{update_url}/{ClientConfig.APP_NAME}-{latest_version}-{PLATFORM}.exe"
     import webbrowser
-
-    webbrowser.open_new_tab(download_url)
+    webbrowser.open_new_tab(update_url)

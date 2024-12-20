@@ -1,11 +1,6 @@
-# client_config.py
-from email.policy import HTTP
-import os
-
+#!filepath: client_config.py
+# changed client_config.py: Added VERSION attribute and removed unused import.
 class ClientConfig(object):
-    PUBLIC_KEY = None  # Replace with your public key later
-    APP_NAME = 'Text-Replacer-by-drquochoai'
-    COMPANY_NAME = 'drquochoai'
-    UPDATE_URLS = ['http://localhost:8000/updates']
-    MAX_DOWNLOAD_RETRIES = 3
     HTTP_TIMEOUT = 30
+    UPDATE_URLS = ['http://localhost:8000/updates']
+    VERSION = "0.0.2"

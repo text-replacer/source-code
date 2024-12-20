@@ -7,3 +7,8 @@ pyinstaller --onefile --windowed --name "Text-Replacer-by-drquochoai" main.py
 npm install -g repomix
 repomix --remote https://github.com/drquochoai/text-auto-replacer-by-drquochoai --remote-branch modulas
 repomix --remote https://github.com/drquochoai/text-auto-replacer-by-drquochoai --remote-branch "4.-PyUpdater" --include **/*.py 
+
+repomix --include **/*.py
+
+
+python -m http.server 8000

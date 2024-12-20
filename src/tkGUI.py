@@ -112,16 +112,26 @@ def update_gui_language():
     """
     Update the GUI labels, buttons, and messages based on the selected language.
     """
-    # Update Labels
-    sheet_url_label.config(text=language_config["Labels"]["sheet_url"])
-    before_replacement_label.config(text=language_config["Labels"]["before_replacement"])
-    after_replacement_label.config(text=language_config["Labels"]["after_replacement"])
+    try:
+        # Update the labels
+        sheet_url_label.config(text=language_config["Labels"]["sheet_url"])
+        before_replacement_label.config(text=language_config["Labels"]["before_replacement"])
+        after_replacement_label.config(text=language_config["Labels"]["after_replacement"])
+        link_edit_file_label.config(text=language_config["Labels"]["link_edit_file"])
 
-    # Update Buttons
-    save_button.config(text=language_config["Buttons"]["save_settings"])
-    pause_button.config(text=language_config["Buttons"]["pause"])
-    reload_button.config(text=language_config["Buttons"]["reload_csv"])
+        # Update the buttons
+        save_button.config(text=language_config["Buttons"]["save_settings"])
+        pause_button.config(text=language_config["Buttons"]["pause"] if not is_paused else language_config["Buttons"]["resume"])
+        reload_button.config(text=language_config["Buttons"]["exit_to_reload_data"])
+        open_sheet_button.config(text=language_config["Buttons"]["open_google_sheet"])
+        download_button.config(text=language_config["Buttons"]["download_update"])
 
+        # Update the status bar
+        status_bar.config(text=language_config["Status"]["ready"])
+
+    except KeyError as e:
+        logging.error(f"Missing translation for key: {e}")
+    
 def change_language(language_code):
     """
     Change the language of the program and save the selected language to the settings file.
@@ -328,9 +338,9 @@ download_button = tk.Button(
     activebackground="#005a9e",
     activeforeground="#fff",
 )
-download_button.grid(row=6, column=2, padx=10, pady=10)
+download_button.grid(row=6, column=2, padx=10, pady=10, sticky="ew")
 # download_button.pack_forget()
-download_button.config(state=tk.DISABLED)  # Disable the button initially
+
 # Call the function to update the GUI with the default language
 change_language(saved_language)
 update_gui_language()

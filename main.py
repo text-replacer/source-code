@@ -1,4 +1,5 @@
 #!filepath: main.py
+# changed main.py: No functional changes, just added file path for clarity.
 # Updated imports: Removed unused imports.
 import atexit
 import tkinter as tk

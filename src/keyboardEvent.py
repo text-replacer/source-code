@@ -32,6 +32,8 @@ def replace_word(word, replacement):
 def on_mouse_move(x, y):
     """
     Callback function to detect significant mouse movement.
+    This is used to reset the buffer of typed characters if the mouse moves significantly,
+    preventing accidental replacements after the user has moved the cursor away.
     """
     global last_mouse_position, mouse_moved_significantly
     # Check if the mouse has moved more than 10 pixels in any direction

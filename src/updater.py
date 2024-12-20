@@ -19,7 +19,7 @@ def get_current_version() -> str:
     """
     return ClientConfig.VERSION
 
-def check_for_new_update(update_label: tk.Label, download_button: tk.Button) -> None:
+def check_for_new_update(update_label, download_button) -> None:
     """Checks for updates and updates the GUI elements accordingly.
 
     Args:

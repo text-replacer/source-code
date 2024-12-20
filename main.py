@@ -2,8 +2,6 @@
 # changed main.py: No functional changes, just added file path for clarity.
 # Updated imports: Removed unused imports.
 import atexit
-import tkinter as tk
-
 from src.starterConfig import *
 from src.languages import *
 from src.processXlsx import *
@@ -82,10 +80,13 @@ def monitor_clipboard(replacement_data):
         except TypeError:
             # Handle the case where clipboard content is not text
             pass
-        except Exception as e:
-            pass
+        except win32clipboard.error as e: # Catch specific clipboard errors
+            logging.error(f"Clipboard error: {e}")
+        except Exception as e: # Keep a general exception for unexpected issues, but log it
+            logging.exception("An unexpected error occurred during clipboard monitoring:") # Use logging.exception for full traceback
 
         time.sleep(TIME_INTERVAL_CLIPBOARD_CHECK)
+
 
 if __name__ == "__main__":
     start_program()

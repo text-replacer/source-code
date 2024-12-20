@@ -88,22 +88,7 @@ def toggle_pause():
         )
         logging.info("Program resumed.")
 
-def exit_to_reload_data():
-    """
-    # Reload the XLSX file from the internet and update the replacement data.
-    # """
-    # global SHEET_URL, current_replacement_data
-    # replacement_data = load_replacement_data(current_value)
-    # if replacement_data:
-    #     current_replacement_data = replacement_data  # Update the current replacement data
-    #     logging.info("XLSX file reloaded from the internet.")
-    #     messagebox.showinfo("Reload", "XLSX file reloaded successfully!")
-    # else:
-    #     logging.error("Failed to reload XLSX file from the internet.")
-    #     messagebox.showerror("Reload", "Failed to reload XLSX file from the internet.")
-
-    # After showing the reload message, exit and restart the program
-    # Close the application
+def exit_program():
     root.quit()
     root.destroy()
     sys.exit()
@@ -122,12 +107,9 @@ def update_gui_language():
         # Update the buttons
         save_button.config(text=language_config["Buttons"]["save_settings"])
         pause_button.config(text=language_config["Buttons"]["pause"] if not is_paused else language_config["Buttons"]["resume"])
-        reload_button.config(text=language_config["Buttons"]["exit_to_reload_data"])
+        exit_button.config(text=language_config["Buttons"]["exit_to_reload_data"])
         open_sheet_button.config(text=language_config["Buttons"]["open_google_sheet"])
         download_button.config(text=language_config["Buttons"]["download_update"])
-
-        # Update the status bar
-        status_bar.config(text=language_config["Status"]["ready"])
 
     except KeyError as e:
         logging.error(f"Missing translation for key: {e}")
@@ -251,7 +233,7 @@ pause_button = tk.Button(
 )
 pause_button.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
 
-reload_button = tk.Button(
+exit_button = tk.Button(
     root,
     text="Exit to Reload data",
     font=custom_font,
@@ -260,9 +242,9 @@ reload_button = tk.Button(
     relief="flat",
     activebackground="#005a9e",
     activeforeground="#fff",
-    command=lambda: exit_to_reload_data(),
+    command=lambda: exit_program(),
 )
-reload_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
+exit_button.grid(row=4, column=0, columnspan=2, padx=10, pady=10, sticky="ew")
 
 # Language dropdown
 saved_language = config.get("Settings", "language", fallback="vi")

@@ -10,6 +10,7 @@ from src.processXlsx import *
 from src.keyboardEvent import *
 from src.tkGUI import *
 import win32clipboard
+import win32con
 import time
 from threading import Thread
 
@@ -36,18 +37,39 @@ def start_program():
     else:
         logging.error("Failed to start program. Exiting program.")
 
+def is_clipboard_text():
+    try:
+        win32clipboard.OpenClipboard()
+        # Check for CF_UNICODETEXT first for Unicode text
+        if win32clipboard.IsClipboardFormatAvailable(win32con.CF_UNICODETEXT):
+            data = win32clipboard.GetClipboardData(win32con.CF_UNICODETEXT)
+            return True, data
+        # Fallback to CF_TEXT for ANSI text
+        elif win32clipboard.IsClipboardFormatAvailable(win32con.CF_TEXT):
+            data = win32clipboard.GetClipboardData(win32con.CF_TEXT)
+            return True, data
+        else:
+            return False, None
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False, None
+    finally:
+        win32clipboard.CloseClipboard()
+
 def monitor_clipboard(replacement_data):
     while True:
         try:
-            win32clipboard.OpenClipboard()
-            content = (
-                win32clipboard.GetClipboardData(win32clipboard.CF_UNICODETEXT)
-                .strip()
-                .lower()
-            )
-            win32clipboard.CloseClipboard()
+            # must check is_clipboard_text, because if not, it will raise TypeError and clipboard will destroy in windows. copy files cannot work
+            is_text, content = is_clipboard_text()
+            if is_text is False:
+                # print(is_text, content)
+                time.sleep(TIME_INTERVAL_CLIPBOARD_CHECK)
+                continue
             keys_of_replacement_data = list(replacement_data.keys())
+            if content is not None:
+                content = content.strip()
             if content in keys_of_replacement_data:
+                print(is_text, content)
                 new_content = replacement_data[content]
                 logging.info(f"Clipboard content: {new_content}")
                 win32clipboard.OpenClipboard()
@@ -61,7 +83,7 @@ def monitor_clipboard(replacement_data):
             # Handle the case where clipboard content is not text
             pass
         except Exception as e:
-            logging.error(f"Error accessing clipboard: {e}")
+            pass
 
         time.sleep(TIME_INTERVAL_CLIPBOARD_CHECK)
 

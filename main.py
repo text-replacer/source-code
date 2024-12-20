@@ -5,12 +5,16 @@ import atexit
 from src.starterConfig import *
 from src.languages import *
 from src.processXlsx import *
-from src.keyboardEvent import *
+# from src.keyboardEvent import *
+from src.keyboardEvent import start_keyboard_listener, keyboard, stop_keyboard_hook
 from src.tkGUI import *
 import win32clipboard
-import win32con
 import time
 from threading import Thread
+
+# Define constants manually
+CF_UNICODETEXT = 13
+CF_TEXT = 1
 
 def start_program():
     """
@@ -39,12 +43,12 @@ def is_clipboard_text():
     try:
         win32clipboard.OpenClipboard()
         # Check for CF_UNICODETEXT first for Unicode text
-        if win32clipboard.IsClipboardFormatAvailable(win32con.CF_UNICODETEXT):
-            data = win32clipboard.GetClipboardData(win32con.CF_UNICODETEXT)
+        if win32clipboard.IsClipboardFormatAvailable(CF_UNICODETEXT):
+            data = win32clipboard.GetClipboardData(CF_UNICODETEXT)
             return True, data
         # Fallback to CF_TEXT for ANSI text
-        elif win32clipboard.IsClipboardFormatAvailable(win32con.CF_TEXT):
-            data = win32clipboard.GetClipboardData(win32con.CF_TEXT)
+        elif win32clipboard.IsClipboardFormatAvailable(CF_TEXT):
+            data = win32clipboard.GetClipboardData(CF_TEXT)
             return True, data
         else:
             return False, None

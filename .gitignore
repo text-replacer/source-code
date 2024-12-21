@@ -8,3 +8,5 @@ __pycache__/
 /pyupdater
 /pyu-data
 /updates
+/*.build
+/*.dist

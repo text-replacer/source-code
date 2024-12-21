@@ -2,4 +2,7 @@ keyboard
 requests
 pynput
 pyperclip
-pyupdater
+openpyxl
+ttkthemes
+pywin32
+pyinstaller==5.13.2

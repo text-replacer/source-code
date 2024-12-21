@@ -1,7 +1,6 @@
 #!filepath: src/updater.py
 # changed src/updater.py: Removed version file dependency, get version from client_config, open update URL instead of specific file.
-import os
-import platform
+
 import requests
 import tkinter as tk
 from packaging import version
